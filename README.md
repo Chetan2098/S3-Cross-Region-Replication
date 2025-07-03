@@ -1,5 +1,3 @@
-# S3-Cross-Region-Replication
-replicates S3 objects from a source bucket in one AWS region to a destination bucket in another
 # ☁️ AWS S3 Cross-Region Replication with Terraform
 
 This repo demonstrates how to set up **S3 Cross-Region Replication (CRR)** using **Terraform**, enabling automatic object replication between two S3 buckets in different AWS regions.
@@ -21,7 +19,7 @@ For same-region replication, AWS also supports **SRR (Same-Region Replication)**
 
 ## 🧱 Architecture
 
-![alt text](image.png)
+![alt text](diagrams/image.png)
 
 
 ---

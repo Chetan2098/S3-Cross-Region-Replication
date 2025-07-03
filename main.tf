@@ -117,7 +117,10 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
       bucket        = aws_s3_bucket.dest_bucket.arn
       storage_class = "STANDARD"
     }
-  }
 
+    delete_marker_replication {
+      status = "Enabled"
+    }
+  }
   depends_on = [aws_s3_bucket_versioning.source_versioning, aws_s3_bucket_versioning.dest_versioning]
 }
