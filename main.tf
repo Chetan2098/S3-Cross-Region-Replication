@@ -124,3 +124,6 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
   }
   depends_on = [aws_s3_bucket_versioning.source_versioning, aws_s3_bucket_versioning.dest_versioning]
 }
+
+
+
