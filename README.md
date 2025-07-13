@@ -47,5 +47,6 @@ For same-region replication, AWS also supports **SRR (Same-Region Replication)**
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/your-username/s3-crr-terraform.git
-   cd s3-crr-terraform
+   git clone https://github.com/Chetan2098/S3-Cross-Region-Replication.git
+   S3-Cross-Region-Replication.git
+   cd S3-Cross-Region-Replication
