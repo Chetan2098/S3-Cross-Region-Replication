@@ -22,7 +22,7 @@ env:
 jobs:
 # ---------- 2. Static checks ----------
   validate:
-    runs-on: linux-x64-medium
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
