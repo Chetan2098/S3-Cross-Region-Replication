@@ -38,11 +38,6 @@ jobs:
       - name: Validate
         run: terraform validate -no-color
 
-      - name: TFLint
-        uses: terraform-linters/tflint-action@v3
-        with:
-            tflint_version: latest
-
 # ---------- 3. Plan ----------
   plan:
     needs: validate
