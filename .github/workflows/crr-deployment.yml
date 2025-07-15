@@ -22,7 +22,7 @@ env:
 jobs:
 # ---------- 2. Static checks ----------
   validate:
-    runs-on: ubuntu-latest
+    runs-on: linux-x64-medium
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
@@ -39,7 +39,9 @@ jobs:
         run: terraform validate -no-color
 
       - name: TFLint
-        uses: terraform-linters/tflint-action@v1
+        uses: terraform-linters/tflint-action@v4
+        with:
+            tflint_version: latest
 
 # ---------- 3. Plan ----------
   plan:
