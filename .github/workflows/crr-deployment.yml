@@ -1,0 +1,97 @@
+name: Terraform CI/CD
+
+# ---------- 1. Triggers ----------
+on:
+  pull_request:
+    branches: [ main, feature/** ]
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write     # for AWS OIDC
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TF_VERSION: "1.7.4"          # pin exact version if you like
+  AWS_REGION: "ap-south-1"     # change to your default region
+
+jobs:
+# ---------- 2. Static checks ----------
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Format (check)
+        run: terraform fmt -check -recursive
+
+      - name: Validate
+        run: terraform validate -no-color
+
+      - name: TFLint
+        uses: terraform-linters/tflint-action@v1
+
+# ---------- 3. Plan ----------
+  plan:
+    needs: validate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      # Assume an AWS role via OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: aarn:aws:iam::180294183044:role/srv_deployment_role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -out tfplan.bin
+
+      # Upload the plan as a PR artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan.bin
+
+# ---------- 4. Apply (main only, requires approval) ----------
+  apply:
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production      # requires manual approval if you lock this env
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/GitHubOIDCRole
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
