@@ -2,8 +2,8 @@ name: Terraform CI/CD
 
 # ---------- 1. Triggers ----------
 on:
-  pull_request:
-    branches: [ main, feature/** ]
+#   pull_request:
+#     branches: [ main, feature/** ]
   push:
     branches: [ main ]
 
@@ -89,7 +89,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/GitHubOIDCRole
+          role-to-assume: arn:aws:iam::180294183044:role/srv_deployment_role
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
