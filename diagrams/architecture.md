@@ -1,16 +1,24 @@
 ```mermaid
-%% S3 Cross-Region Replication Animated Diagram
+%% S3 Cross-Region Replication Diagram with Color
 
-sequenceDiagram
-    participant User
-    participant SourceBucket as S3 Source Bucket (us-east-1)
-    participant IAMRole as IAM Replication Role
-    participant ReplicationConfig as Replication Configuration
-    participant DestinationBucket as S3 Destination Bucket (us-west-2)
+flowchart LR
+    subgraph Source["Source Region (us-east-1)"]
+        A[S3 Source Bucket]:::bucket
+    end
+    subgraph Dest["Destination Region (us-west-2)"]
+        B[S3 Destination Bucket]:::bucket
+    end
+    IAM[IAM Replication Role]:::role
+    RepConfig[Replication Configuration]:::config
 
-    User->>SourceBucket: Uploads Object
-    SourceBucket-->>ReplicationConfig: Triggers Replication Rule
-    ReplicationConfig-->>IAMRole: Assumes IAM Role for Replication
-    IAMRole-->>DestinationBucket: Replicates Object
-    DestinationBucket-->>User: Object Available in Destination
+    User((User)):::user --> A
+    A -- "Replication Trigger" --> RepConfig
+    RepConfig -- "AssumeRole" --> IAM
+    IAM -- "Replicate Object" --> B
+    B -- "Object Available" --> User
+
+    classDef bucket fill:#f7e6a2,stroke:#b59f3b,stroke-width:2px;
+    classDef role fill:#a2d9f7,stroke:#3bb5b5,stroke-width:2px;
+    classDef config fill:#d1f7a2,stroke:#3bb55b,stroke-width:2px;
+    classDef user fill:#f7a2a2,stroke:#b53b3b,stroke-width:2px;
 ```
