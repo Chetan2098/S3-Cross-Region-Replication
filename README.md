@@ -19,8 +19,9 @@ For same-region replication, AWS also supports **SRR (Same-Region Replication)**
 
 ## 🧱 Architecture
 
-![alt text](diagrams/image.png)
+<!-- ![alt text](diagrams/image.png) -->
 
+![Animated Architecture](diagrams/animated-architecture.svg)
 
 ---
 
